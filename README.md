@@ -80,11 +80,12 @@ Two DAGs are available in airflow/dags/:
 2. Copy DAG files into the `$AIRFLOW_HOME/dags` directory
 3. Enable the DAG in the Airflow UI
 4. Trigger the DAG manually or via schedule
-5. Verify generated files in the staging directory
+5. Verify generated files created by the DAG tasks
 
 ### 2️⃣ Streaming ETL with Kafka → MySQL
 #### Prepare MySQL
 Ensure Kafka broker and MySQL are running before starting the consumer.
+The consumer runs continuously and processes messages in real time.
 Execute the SQL script:
 
 ```sql
@@ -104,6 +105,9 @@ The consumer:
 - reads messages from Kafka topic `toll`
 - parses vehicle events
 - inserts streaming data into a MySQL database table for persistent storage.
+
+Note: Kafka broker and MySQL are expected to be available on localhost
+(e.g. via Docker, local installation, or Codespaces services).
 
 
 ## 🔄 Data Flow Diagram
