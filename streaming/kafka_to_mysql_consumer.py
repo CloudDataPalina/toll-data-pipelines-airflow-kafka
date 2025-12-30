@@ -3,12 +3,16 @@ from kafka import KafkaConsumer
 import mysql.connector
 import sys
 
-TOPIC = 'toll'
+# Kafka configuration
+TOPIC = "toll"
+BOOTSTRAP_SERVERS = "localhost:9092"
+CONSUMER_GROUP = "toll_consumer_group"
 
-DATABASE = 'tolldata'
-USERNAME = 'etluser'
-PASSWORD = 'etlpass123'
-MYSQL_HOST = '172.21.31.203'
+# MySQL configuration
+DATABASE = "tolldata"
+USERNAME = "etluser"
+PASSWORD = "etlpass123"
+MYSQL_HOST = "localhost"
 MYSQL_PORT = 3306
 
 print("Connecting to the database...")
@@ -29,25 +33,37 @@ except Exception as e:
 print("Connected to database")
 cursor = connection.cursor()
 
-print("Connecting to Kafka")
+print("Connecting to Kafka...")
+
 consumer = KafkaConsumer(
     TOPIC,
-    bootstrap_servers='localhost:9092'
+    bootstrap_servers=BOOTSTRAP_SERVERS,
+    group_id=CONSUMER_GROUP,
+    auto_offset_reset="latest"
 )
 
 print("Connected to Kafka")
-print(f"Reading messages from topic {TOPIC}")
+print(f"Reading messages from topic '{TOPIC}'")
 
 for msg in consumer:
     message = msg.value.decode("utf-8")
-    (timestamp, vehicle_id, vehicle_type, plaza_id) = message.split(",")
+    timestamp, vehicle_id, vehicle_type, plaza_id = message.split(",")
 
-    dateobj = datetime.strptime(timestamp, "%a %b %d %H:%M:%S %Y")
-    timestamp = dateobj.strftime("%Y-%m-%d %H:%M:%S")
+    date_obj = datetime.strptime(timestamp, "%a %b %d %H:%M:%S %Y")
+    formatted_timestamp = date_obj.strftime("%Y-%m-%d %H:%M:%S")
 
-    sql = "INSERT INTO livetolldata VALUES (%s,%s,%s,%s)"
-    cursor.execute(sql, (timestamp, vehicle_id, vehicle_type, plaza_id))
+    sql = """
+        INSERT INTO livetolldata (timestamp, vehicle_id, vehicle_type, toll_plaza_id)
+        VALUES (%s, %s, %s, %s)
+    """
+
+    cursor.execute(
+        sql,
+        (formatted_timestamp, vehicle_id, vehicle_type, plaza_id)
+    )
     connection.commit()
 
-    print(f"A {vehicle_type} was inserted into the database")
+    print(f"Inserted vehicle type '{vehicle_type}' into the database")
+
+
 
