@@ -125,6 +125,8 @@ Sat Jun 01 12:00:00 2024,101,car,7
 #### MySQL Table Output
 ```sql
 SELECT * FROM livetolldata;
+```
+
 ```text
 +---------------------+------------+--------------+----------------+
 | timestamp           | vehicle_id | vehicle_type | toll_plaza_id |
