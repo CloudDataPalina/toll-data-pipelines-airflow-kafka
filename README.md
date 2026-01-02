@@ -108,7 +108,31 @@ The consumer:
 
 Note: Kafka broker and MySQL are expected to be available on localhost
 (e.g. via Docker, local installation, or Codespaces services).
+Kafka and MySQL were validated using Docker Compose in GitHub Codespaces (local development setup).
 
+---
+
+## ✅ Example Output (Streaming Verification)
+
+After producing a test message to the Kafka topic and running the consumer,
+the data is successfully inserted into the MySQL database.
+
+#### Sample Kafka Message
+```text
+Sat Jun 01 12:00:00 2024,101,car,7
+```
+
+#### MySQL Table Output
+```sql
+SELECT * FROM livetolldata;
+```text
++---------------------+------------+--------------+----------------+
+| timestamp           | vehicle_id | vehicle_type | toll_plaza_id |
++---------------------+------------+--------------+----------------+
+| 2024-06-01 12:00:00 | 101        | car          | 7              |
++---------------------+------------+--------------+----------------+
+```
+--- 
 
 ## 🔄 Data Flow Diagram
 ```text
