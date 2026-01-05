@@ -54,7 +54,7 @@ toll-data-pipelines-airflow-kafka/
 │   └── kafka_to_mysql_consumer.py        ← Kafka consumer (streaming ETL)
 │
 ├── sql/
-│   └── init_mysql.sql                   ← MySQL schema initialization
+│   └── init_mysql.sql                    ← MySQL schema initialization
 │
 └── LICENSE
 ```
